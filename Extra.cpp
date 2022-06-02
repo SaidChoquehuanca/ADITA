@@ -2,83 +2,58 @@
 #include <vector>
 #include <array>
 #include <math.h>
+#include <ctime>
 using namespace std;
 
-//Miguel
-int busqueda_lineal(vector<int> fila,int j_0, int j_isima) {
-    int menor = fila[0];
-    for(int i = j_0 ; i < j_isima; i++){
-        if(fila[i] < menor) {
-            menor= fila[i];
+
+typedef long long int tipo;
+
+int obtener_menor_pos(const vector<tipo> &fila){
+    int menor = 0;
+    for (int i = 0; i < fila.size(); ++i) {
+        if (fila[i] < fila[menor]){
+            menor = i;
         }
     }
     return menor;
 }
 
+//Miguel
+vector<vector<tipo>> MATRIZESPECIAL(int m , int n, vector<int> &posicion){
+    vector<vector<tipo>> ME;
+    int actual_menor = 0;
+    for (int i = 0; i < m; ++i) {
+        vector<tipo> vec;
+        do {
+            vec = {};
+            for (int j = 0; j < n; ++j) {
+                tipo numero_random = rand()%(900000000-10000000+1) + 10000000;
+                vec.push_back(numero_random);
+            }
+        } while (actual_menor>obtener_menor_pos(vec));
+        actual_menor = obtener_menor_pos(vec);
+        posicion.push_back(actual_menor);
+        ME.push_back(vec);
+    }
+    return ME;
+}
 
-int buscar_position(vector<int>fila,int j_0, int j_iesima){
-    int bus = busqueda_lineal(fila,j_0,j_iesima);
-    for (int i = 0; i<fila.size(); i++){
-        if (fila[i]==bus)
-        {
-            return i;
+bool comprobar_ascendencia(const vector<int> &asas){
+    for (int i = 0; i < asas.size()-1; ++i) {
+        if (asas[i]>asas[i+1]){
+            return false;
         }
     }
-    return 0;
+    return true;
 }
-
-int get_minimo(const vector<vector<int>> &ME, int n_filas0, int &m_columnas0 , int n_filase , int &m_colmanase,bool direc)
-{
-    int numero = busqueda_lineal(ME[int(n_filas0/n_filase)],m_columnas0,m_colmanase);
-
-    int pos = buscar_position(ME[int(n_filas0/n_filase)],m_columnas0,m_colmanase);
-
-    if (direc){
-        m_colmanase=pos;
-    } else{
-        m_columnas0=pos;
-    }
-    return numero;
-}
-
-void cacahuasi(const vector<vector<int>> &ME, int n_filas0, int &m_columnas0 , int n_filase , int &m_colmanase, vector<int> &minimos,bool dir){
-    int fila_mid;
-    int *ptr_coli=&m_columnas0;
-    int *ptr_cole=&m_colmanase;
-    if (n_filas0 < n_filase){
-        fila_mid = int((n_filas0+n_filase)/2);
-        cacahuasi(ME,fila_mid,*ptr_coli,fila_mid,*ptr_cole,minimos,true);
-        cacahuasi(ME,(fila_mid+1),*ptr_coli,n_filase,*ptr_cole,minimos,false);
-        auto a = get_minimo(ME,n_filas0,*ptr_coli,n_filase,*ptr_cole,dir);
-        minimos.push_back(a);
-    }
-
-}
-
 
 int main() {
-    vector<vector<int>> matrix = {
-            {1,2,3},
-            {4,3,5},
-            {6,5,4}
-    };
-    /*
-    for (size_t i = 0; i < fila.size(); ++i) {
-        cout << fila[i] << "; ";
-    }
-    cout << endl;
-    cout << busqueda_lineal(fila, 5, 11);
-    cout << endl;
-
-    cout << buscar_position(fila,5,11);
-    */
-    vector<int> min;
-    int f0= 0;
-    int ff = 3;
-    cacahuasi(matrix,0,f0,3,ff,min,false);
-    for (int i = 0; i < min.size(); ++i) {
-        cout<<min[i]<<" ";
-    }
-
+    vector<int> posicionesl;
+    srand(time(NULL));
+    vector<vector<tipo>> matrix = MATRIZESPECIAL(1000,1000,posicionesl);
+    /*for (int i = 0; i < posicionesl.size(); ++i) {
+        cout<<posicionesl[i]<<endl;
+    }*/
+    cout<<comprobar_ascendencia(posicionesl);
     return 0;
 }
